@@ -1,18 +1,15 @@
 defmodule SampleBot do
-  @moduledoc """
-  Documentation for SampleBot.
-  """
 
-  @doc """
-  Hello world.
+  use Application
 
-  ## Examples
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
 
-      iex> SampleBot.hello()
-      :world
+    children = [
+      worker(SampleBot.Bot, [[]]),
+    ]
 
-  """
-  def hello do
-    :world
+    opts = [strategy: :one_for_one, name: SampleBot.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end
