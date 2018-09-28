@@ -5,8 +5,14 @@ defmodule SampleBot.Handler do
     send_message("pong", channel, slack)
   end
 
-  def handle_message([user_id | mes] = _text, channel, slack, user_id) do
-    send_message("Hello world", channel, slack)
+  def handle_message([user_id, "crash"] = _text, channel, slack, user_id) do
+    Task.start(SampleBot.Wait, :crash, [channel, slack])
+    send_message("Recieved.", channel, slack)
+  end
+
+  def handle_message([user_id | _mes] = _text, channel, slack, user_id) do
+    Task.start(SampleBot.Wait, :job, [channel, slack])
+    send_message("Recieved.", channel, slack)
   end
 
   def handle_message(_, _, _, _) do
